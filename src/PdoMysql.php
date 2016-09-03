@@ -25,7 +25,7 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
         $_query->setParameter(':__offset', (int)$offset);
         $_query->setQueryStr(self::buildQueryWithLimit($query->getQueryStr()));
 
-        $itemRows = $this->read($query)->asArray();
+        $itemRows = $this->read($_query)->asArray();
         $countRow = $this->read(new PdoQuery('SELECT FOUND_ROWS() as __count'))->getFirst();
         $totalCount = $countRow['__count'];
         $hasMore = count($itemRows) > (int)$limit;
