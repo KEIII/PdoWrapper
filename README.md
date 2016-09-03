@@ -19,7 +19,7 @@ use KEIII\PdoWrapper\PdoQuery;
 $db = new PdoWrapper('sqlite::memory:');
 
 // write
-$sql = 'INSERT INTO people (name) VALUES ("John Smith");';
+$sql = 'INSERT INTO people (name) VALUES (:name);';
 $parameters = [':name' => 'John'];
 $db->write(new PdoQuery($sql, $parameters));
 
