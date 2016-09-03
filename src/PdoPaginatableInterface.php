@@ -2,7 +2,7 @@
 
 namespace KEIII\PdoWrapper;
 
-interface PdoPaginatableInterface
+interface PdoPaginatableInterface extends PdoWrapperInterface
 {
     /**
      * Get a paginated result.
