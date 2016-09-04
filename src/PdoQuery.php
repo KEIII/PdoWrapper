@@ -76,7 +76,7 @@ class PdoQuery
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return $this
      */
