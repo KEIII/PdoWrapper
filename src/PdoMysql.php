@@ -48,7 +48,7 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
     public static function buildQueryWithLimit($query)
     {
         $query = rtrim((string)$query, ';'); // remove last semicolon char
-        $query = self::replaceFirst('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $query);
+        $query = self::replaceFirst('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $query, true);
         $query .= ' LIMIT :__offset, :__limit;';
 
         return $query;
@@ -60,12 +60,13 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
      * @param string $from
      * @param string $to
      * @param string $subject
+     * @param bool   $caseInsensitive
      *
      * @return string
      */
-    protected static function replaceFirst($from, $to, $subject)
+    protected static function replaceFirst($from, $to, $subject, $caseInsensitive = false)
     {
-        $pos = strpos($subject, $from);
+        $pos = $caseInsensitive ? stripos($subject, $from) : strpos($subject, $from);
 
         if ($pos !== false) {
             return substr_replace($subject, $to, $pos, strlen($from));
