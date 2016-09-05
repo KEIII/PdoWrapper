@@ -1,6 +1,6 @@
 <?php
 
-namespace KEIII\PdoWrapper\tests;
+namespace KEIII\PdoWrapper\Tests;
 
 use KEIII\PdoWrapper\PdoMysql;
 
