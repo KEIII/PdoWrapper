@@ -34,9 +34,7 @@ class PdoWrapper implements PdoWrapperInterface
     }
 
     /**
-     * @return \PDO
-     *
-     * @throws PdoWrapperException
+     * {@inheritdoc}
      */
     public function getPdo()
     {

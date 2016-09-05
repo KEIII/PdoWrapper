@@ -5,6 +5,15 @@ namespace KEIII\PdoWrapper;
 interface PdoWrapperInterface
 {
     /**
+     * Get PDO instance.
+     *
+     * @return \PDO
+     *
+     * @throws PdoWrapperException
+     */
+    public function getPdo();
+
+    /**
      * Read data from the database.
      *
      * @param PdoQuery $query
