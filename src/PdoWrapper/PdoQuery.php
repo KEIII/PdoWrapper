@@ -43,7 +43,7 @@ class PdoQuery
      *
      * @return $this
      */
-    public function setQueryStr($queryStr)
+    private function setQueryStr($queryStr)
     {
         $this->queryStr = (string)$queryStr;
 
@@ -63,7 +63,7 @@ class PdoQuery
      *
      * @return $this
      */
-    public function setParameters(array $parameters)
+    private function setParameters(array $parameters)
     {
         $this->parameters = [];
 
@@ -80,7 +80,7 @@ class PdoQuery
      *
      * @return $this
      */
-    public function setParameter($name, $value)
+    private function setParameter($name, $value)
     {
         $parameter = new PdoParameter($name, $value);
         $this->parameters[$parameter->getName()] = $parameter;

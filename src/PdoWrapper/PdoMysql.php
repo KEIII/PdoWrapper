@@ -19,13 +19,14 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
      */
     public function paginatedResult(PdoQuery $query, $limit = 10, $offset = 0)
     {
-        $_query = clone $query;
-        // add one additional limit to detect "has more"
-        $_query->setParameter(':__limit', (int)$limit + 1);
-        $_query->setParameter(':__offset', (int)$offset);
-        $_query->setQueryStr(self::buildQueryWithLimit($query->getQueryStr()));
+        $paginatedSql = self::buildQueryWithLimit($query->getQueryStr());
+        $paginatedParameters = array_replace($query->getParameters(), [
+            ':__limit' => (int)$limit + 1, // add one additional limit to detect "has more"
+            ':__offset' => (int)$offset,
+        ]);
+        $paginatedQuery = new PdoQuery($paginatedSql, $paginatedParameters);
 
-        $itemRows = $this->read($_query)->asArray();
+        $itemRows = $this->read($paginatedQuery)->asArray();
         $countRow = $this->read(new PdoQuery('SELECT FOUND_ROWS() as __count'))->getFirst();
         $totalCount = $countRow['__count'];
         $hasMore = count($itemRows) > (int)$limit;
