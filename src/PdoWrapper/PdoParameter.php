@@ -55,7 +55,7 @@ class PdoParameter
      *
      * @return $this
      */
-    public function setName($name)
+    private function setName($name)
     {
         $name = (string)$name;
 
@@ -81,7 +81,7 @@ class PdoParameter
      *
      * @return $this
      */
-    public function setValue($value)
+    private function setValue($value)
     {
         $this->value = $value;
         $this->updateType();
