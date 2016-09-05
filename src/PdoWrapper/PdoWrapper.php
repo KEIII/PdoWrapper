@@ -17,7 +17,7 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * @var \PDOStatement[]
      */
-    private $cache = [];
+    private $cachedStatements = [];
 
     /**
      * Constructor.
@@ -127,7 +127,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function close()
     {
-        $this->cache = [];
+        $this->cachedStatements = [];
         $this->pdo = null;
     }
 
@@ -186,11 +186,11 @@ class PdoWrapper implements PdoWrapperInterface
         $hash = crc32($query);
 
         // cache prepared statement
-        if (!array_key_exists($hash, $this->cache)) {
-            $this->cache[$hash] = $this->getPdo()->prepare($query);
+        if (!array_key_exists($hash, $this->cachedStatements)) {
+            $this->cachedStatements[$hash] = $this->getPdo()->prepare($query);
         }
 
-        return $this->cache[$hash];
+        return $this->cachedStatements[$hash];
     }
 
     /**
