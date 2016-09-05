@@ -62,7 +62,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
     private function connect()
     {
-        // close previous connection
+        // close a previous connection
         $this->close();
 
         try {
