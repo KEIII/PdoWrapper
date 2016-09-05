@@ -20,17 +20,61 @@ class PdoWrapper implements PdoWrapperInterface
     private $cachedStatements = [];
 
     /**
+     * @var string
+     */
+    private $dsn;
+
+    /**
+     * @var string|null
+     */
+    private $username;
+
+    /**
+     * @var string|null
+     */
+    private $password;
+
+    /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * Constructor.
      *
      * @param string      $dsn
      * @param string|null $username
-     * @param string|null $passwd
-     * @param array       $options
+     * @param string|null $password
+     * @param array|null  $options
      */
-    public function __construct($dsn, $username = null, $passwd = null, array $options = null)
+    public function __construct($dsn, $username = null, $password = null, array $options = null)
     {
-        $_options = array_replace($this->getDefaultOptions(), $options ?: []);
-        $this->pdo = new \PDO((string)$dsn, (string)$username, (string)$passwd, $_options);
+        $this->dsn = (string)$dsn;
+        $this->username = $username;
+        $this->password = $password;
+        $this->options = $options ?: [];
+
+        $this->connect();
+    }
+
+    /**
+     * Create a connection.
+     */
+    private function connect()
+    {
+        // close previous connection
+        $this->close();
+
+        try {
+            $this->pdo = new \PDO(
+                $this->dsn,
+                null !== $this->username ? (string)$this->username : null,
+                null !== $this->password ? (string)$this->password : null,
+                array_replace($this->getDefaultOptions(), $this->options)
+            );
+        } catch (\PDOException $ex) {
+            throw new PdoWrapperException('Connection failed.', null, 0, $ex);
+        }
     }
 
     /**
