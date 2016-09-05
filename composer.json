@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "KEIII\\PdoWrapper\\": "src"
+            "KEIII\\PdoWrapper\\": "src/PdoWrapper"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "KEIII\\PdoWrapper\\Tests\\": "tests"
+            "KEIII\\PdoWrapper\\Tests\\": "tests/PdoWrapper/Tests"
         }
     }
 }
