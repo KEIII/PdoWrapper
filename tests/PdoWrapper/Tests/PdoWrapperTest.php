@@ -121,7 +121,7 @@ class PdoWrapperTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException \KEIII\PdoWrapper\PdoWrapperException
      */
     public function testClose()
     {

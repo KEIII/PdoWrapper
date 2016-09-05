@@ -36,12 +36,12 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * @return \PDO
      *
-     * @throws \LogicException
+     * @throws PdoWrapperException
      */
     public function getPdo()
     {
         if (!$this->pdo instanceof \PDO) {
-            throw new \LogicException('Connection is closed.');
+            throw new PdoWrapperException('Connection is closed.');
         }
 
         return $this->pdo;
@@ -83,8 +83,22 @@ class PdoWrapper implements PdoWrapperInterface
     public function beginTransaction()
     {
         if (++$this->transactionCount === 1) {
-            if (!$this->getPdo()->beginTransaction()) {
-                throw new \PDOException('Initiates a transaction failure.');
+            $pdo = $this->getPdo();
+
+            try {
+                if (!$pdo->beginTransaction()) {
+                    $ex = new PdoWrapperException('Initiates a transaction failure.');
+                    $ex->errorInfo = $pdo->errorInfo();
+                    throw $ex;
+                }
+            } catch (\PDOException $ex) {
+                if ($ex instanceof PdoWrapperException) {
+                    throw $ex;
+                } else {
+                    $wrapperEx = new PdoWrapperException($ex->getMessage(), null, $ex->getCode(), $ex);
+                    $wrapperEx->errorInfo = $ex->errorInfo;
+                    throw $wrapperEx;
+                }
             }
         }
     }
@@ -95,7 +109,12 @@ class PdoWrapper implements PdoWrapperInterface
     public function rollBack()
     {
         $this->transactionCount = 0;
-        $this->getPdo()->rollBack();
+
+        try {
+            $this->getPdo()->rollBack();
+        } catch (\PDOException $ex) {
+            // ignore
+        }
     }
 
     /**
@@ -104,12 +123,26 @@ class PdoWrapper implements PdoWrapperInterface
     public function commit()
     {
         if ($this->transactionCount <= 0) {
-            throw new \LogicException('No transaction found.');
+            throw new PdoWrapperException('No transaction found.');
         }
 
         if (--$this->transactionCount === 0) {
-            if (!$this->getPdo()->commit()) {
-                throw new PdoWrapperException('Commits a transaction failure.');
+            $pdo = $this->getPdo();
+
+            try {
+                if (!$pdo->commit()) {
+                    $ex = new PdoWrapperException('Commits a transaction failure.');
+                    $ex->errorInfo = $pdo->errorInfo();
+                    throw $ex;
+                }
+            } catch (\PDOException $ex) {
+                if ($ex instanceof PdoWrapperException) {
+                    throw $ex;
+                } else {
+                    $wrapperEx = new PdoWrapperException($ex->getMessage(), null, $ex->getCode(), $ex);
+                    $wrapperEx->errorInfo = $ex->errorInfo;
+                    throw $wrapperEx;
+                }
             }
         }
     }
@@ -167,8 +200,18 @@ class PdoWrapper implements PdoWrapperInterface
         $statement = $this->getStatement($query->getQueryStr());
         $this->bindValues($statement, $query->getParameters());
 
-        if (!$statement->execute()) {
-            throw new PdoWrapperException('Failed execute statement.');
+        try {
+            if (!$statement->execute()) {
+                $ex = new PdoWrapperException('Failed execute the statement.', $query);
+                $ex->errorInfo = $statement->errorInfo();
+                throw $ex;
+            }
+        } catch (\PDOException $ex) {
+            if ($ex instanceof PdoWrapperException) {
+                throw $ex;
+            } else {
+                throw new PdoWrapperException($ex->getMessage(), $query, $ex->getCode(), $ex);
+            }
         }
 
         return $statement;

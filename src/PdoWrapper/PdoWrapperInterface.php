@@ -10,6 +10,8 @@ interface PdoWrapperInterface
      * @param PdoQuery $query
      *
      * @return PdoDataReader
+     *
+     * @throws PdoWrapperException
      */
     public function read(PdoQuery $query);
 
@@ -17,11 +19,15 @@ interface PdoWrapperInterface
      * Write data to the database.
      *
      * @param PdoQuery $query
+     *
+     * @throws PdoWrapperException
      */
     public function write(PdoQuery $query);
 
     /**
      * Begin a transaction.
+     *
+     * @throws PdoWrapperException
      */
     public function beginTransaction();
 
@@ -32,6 +38,8 @@ interface PdoWrapperInterface
 
     /**
      * Commit a transaction.
+     *
+     * @throws PdoWrapperException
      */
     public function commit();
 
