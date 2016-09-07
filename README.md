@@ -29,7 +29,8 @@ $parameters = [':name' => 'John'];
 $john = $db->read(new PdoQuery($sql, $parameters))->getFirst();
 
 // as generator
-$people = $db->read(new PdoQuery('SELECT * FROM people;'))->asGenerator();
+$sql = 'SELECT * FROM people;';
+$people = $db->read(new PdoQuery($sql))->asGenerator();
 foreach ($people as $human) {
     // ...
 }
