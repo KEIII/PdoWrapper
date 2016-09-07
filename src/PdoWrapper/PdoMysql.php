@@ -7,7 +7,7 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
     /**
      * {@inheritdoc}
      */
-    protected function getDefaultOptions()
+    protected static function getDefaultOptions()
     {
         return array_replace(parent::getDefaultOptions(), [
             \PDO::ATTR_EMULATE_PREPARES => true, // Emulate prepare. For MySQL this need to be set true so that PDO can emulate the prepare support to bypass the buggy native prepare support.
@@ -19,12 +19,12 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
      */
     public function paginatedResult(PdoQuery $query, $limit = 10, $offset = 0)
     {
-        $paginatedSql = self::buildQueryWithLimit($query->getQueryStr());
+        $paginatedQueryStr = self::buildQueryStrWithLimit($query->getQueryStr());
         $paginatedParameters = array_replace($query->getParameters(), [
             ':__limit' => (int)$limit + 1, // add one additional limit to detect "has more"
             ':__offset' => (int)$offset,
         ]);
-        $paginatedQuery = new PdoQuery($paginatedSql, $paginatedParameters);
+        $paginatedQuery = new PdoQuery($paginatedQueryStr, $paginatedParameters);
 
         $itemRows = $this->read($paginatedQuery)->asArray();
         $countRow = $this->read(new PdoQuery('SELECT FOUND_ROWS() as __count'))->getFirst();
@@ -40,19 +40,19 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
     }
 
     /**
-     * Prepare sql query for pagination.
+     * Prepare query string for pagination.
      *
-     * @param string $query The sql query without limit and offset
+     * @param string $queryStr The query string without limit and offset
      *
-     * @return string The sql query with limit and offset
+     * @return string The query string with limit and offset
      */
-    public static function buildQueryWithLimit($query)
+    public static function buildQueryStrWithLimit($queryStr)
     {
-        $query = rtrim((string)$query, ';'); // remove last semicolon char
-        $query = self::replaceFirst('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $query, true);
-        $query .= ' LIMIT :__offset, :__limit;';
+        $queryStr = rtrim((string)$queryStr, ';'); // remove last semicolon char
+        $queryStr = self::replaceFirst('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $queryStr, true);
+        $queryStr .= ' LIMIT :__offset, :__limit;';
 
-        return $query;
+        return $queryStr;
     }
 
     /**

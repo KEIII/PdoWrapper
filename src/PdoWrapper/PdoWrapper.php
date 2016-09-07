@@ -70,10 +70,10 @@ class PdoWrapper implements PdoWrapperInterface
                 $this->dsn,
                 null !== $this->username ? (string)$this->username : null,
                 null !== $this->password ? (string)$this->password : null,
-                array_replace($this->getDefaultOptions(), $this->options)
+                array_replace(static::getDefaultOptions(), $this->options)
             );
         } catch (\PDOException $ex) {
-            throw new PdoWrapperException('Connection failed.', null, 0, $ex);
+            throw new PdoWrapperException('Connection failed.', null, null, $ex);
         }
     }
 
@@ -92,7 +92,7 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * @return array
      */
-    protected function getDefaultOptions()
+    protected static function getDefaultOptions()
     {
         return [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -231,7 +231,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
 
     /**
-     * Execute statement.
+     * Execute the statement.
      *
      * @param PdoQuery $query
      *
@@ -252,7 +252,9 @@ class PdoWrapper implements PdoWrapperInterface
             if ($ex instanceof PdoWrapperException) {
                 throw $ex;
             } else {
-                throw new PdoWrapperException($ex->getMessage(), $query, $ex->getCode(), $ex);
+                $wrapperEx = new PdoWrapperException($ex->getMessage(), $query, $ex->getCode(), $ex);
+                $wrapperEx->errorInfo = $statement->errorInfo();
+                throw $wrapperEx;
             }
         }
 
@@ -260,28 +262,28 @@ class PdoWrapper implements PdoWrapperInterface
     }
 
     /**
-     * Get prepared statement.
+     * Get a prepared statement.
      *
-     * @param string $query
+     * @param string $queryStr
      *
      * @return \PDOStatement
      */
-    private function getStatement($query)
+    private function getStatement($queryStr)
     {
-        $hash = crc32($query);
+        $hash = crc32($queryStr);
 
         // cache prepared statement
         if (!array_key_exists($hash, $this->cachedStatements)) {
-            $this->cachedStatements[$hash] = $this->getPdo()->prepare($query);
+            $this->cachedStatements[$hash] = $this->getPdo()->prepare($queryStr);
         }
 
         return $this->cachedStatements[$hash];
     }
 
     /**
-     * Binds values.
+     * Bind values.
      *
-     * @param $statement \PDOStatement
+     * @param $statement     \PDOStatement
      * @param PdoParameter[] $parameters
      *
      * @return $this

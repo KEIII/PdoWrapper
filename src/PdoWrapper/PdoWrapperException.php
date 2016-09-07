@@ -17,12 +17,12 @@ class PdoWrapperException extends \PDOException
      *
      * @param string          $message
      * @param PdoQuery|null   $query
-     * @param int             $code
+     * @param string|null     $code
      * @param \Exception|null $previous
      */
-    public function __construct($message, PdoQuery $query = null, $code = 0, \Exception $previous = null)
+    public function __construct($message, PdoQuery $query = null, $code = null, \Exception $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct((string)$message, (int)$code, $previous);
 
         $this->query = $query;
     }

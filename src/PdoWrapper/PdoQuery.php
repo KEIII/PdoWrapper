@@ -21,12 +21,12 @@ class PdoQuery
     /**
      * Constructor.
      *
-     * @param string     $query
-     * @param array|null $parameters
+     * @param string              $queryStr
+     * @param PdoParameter[]|null $parameters
      */
-    public function __construct($query, array $parameters = null)
+    public function __construct($queryStr, array $parameters = null)
     {
-        $this->setQueryStr($query);
+        $this->setQueryStr($queryStr);
         $this->setParameters($parameters ?: []);
     }
 
@@ -51,7 +51,7 @@ class PdoQuery
     }
 
     /**
-     * @return array
+     * @return PdoParameter[]
      */
     public function getParameters()
     {

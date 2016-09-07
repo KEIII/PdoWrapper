@@ -5,7 +5,7 @@ namespace KEIII\PdoWrapper;
 interface PdoWrapperInterface
 {
     /**
-     * Get PDO instance.
+     * Get a PDO instance.
      *
      * @return \PDO
      *
@@ -14,7 +14,7 @@ interface PdoWrapperInterface
     public function getPdo();
 
     /**
-     * Read data from the database.
+     * Read the data from the database.
      *
      * @param PdoQuery $query
      *
@@ -25,7 +25,7 @@ interface PdoWrapperInterface
     public function read(PdoQuery $query);
 
     /**
-     * Write data to the database.
+     * Write the data to the database.
      *
      * @param PdoQuery $query
      *
@@ -62,7 +62,7 @@ interface PdoWrapperInterface
     public function lastInsertId($name = 'id');
 
     /**
-     * Close the connections.
+     * Close the connection.
      */
     public function close();
 }

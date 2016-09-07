@@ -15,7 +15,7 @@ class PdoParameter
     private $value;
 
     /**
-     * @var string
+     * @var int
      */
     private $type;
 
@@ -90,7 +90,7 @@ class PdoParameter
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getType()
     {
