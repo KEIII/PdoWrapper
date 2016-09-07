@@ -54,13 +54,13 @@ class PdoWrapper implements PdoWrapperInterface
         $this->password = $password;
         $this->options = $options ?: [];
 
-        $this->connect();
+        $this->reconnect();
     }
 
     /**
-     * Create a connection.
+     * Close and create new connection.
      */
-    private function connect()
+    private function reconnect()
     {
         // close a previous connection
         $this->close();
