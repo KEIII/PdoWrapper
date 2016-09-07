@@ -227,6 +227,14 @@ class PdoWrapper implements PdoWrapperInterface
     }
 
     /**
+     * On destruct object.
+     */
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    /**
      * Private methods.
      */
 
