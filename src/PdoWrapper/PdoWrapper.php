@@ -202,7 +202,8 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function close()
     {
-        $this->cachedStatements = [];
+        $this->transactionCount = 0;
+        $this->closeCachedStatements();
         $this->pdo = null;
     }
 
@@ -299,5 +300,17 @@ class PdoWrapper implements PdoWrapperInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Close all cached prepared statements.
+     */
+    private function closeCachedStatements()
+    {
+        foreach ($this->cachedStatements as &$statement) {
+            $statement = null;
+        }
+        unset($statement);
+        $this->cachedStatements = [];
     }
 }
