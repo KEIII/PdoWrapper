@@ -59,6 +59,8 @@ class PdoWrapper implements PdoWrapperInterface
 
     /**
      * Close and create new connection.
+     *
+     * @throws PdoWrapperException
      */
     private function reconnect()
     {
@@ -73,7 +75,7 @@ class PdoWrapper implements PdoWrapperInterface
                 array_replace(static::getDefaultOptions(), $this->options)
             );
         } catch (\PDOException $ex) {
-            throw new PdoWrapperException('Connection failed.', null, null, $ex);
+            throw $this->wrapPdoException($ex);
         }
     }
 
@@ -134,13 +136,8 @@ class PdoWrapper implements PdoWrapperInterface
                     throw $ex;
                 }
             } catch (\PDOException $ex) {
-                if ($ex instanceof PdoWrapperException) {
-                    throw $ex;
-                } else {
-                    $wrapperEx = new PdoWrapperException($ex->getMessage(), null, $ex->getCode(), $ex);
-                    $wrapperEx->errorInfo = $ex->errorInfo;
-                    throw $wrapperEx;
-                }
+                $this->reconnect();
+                throw $this->wrapPdoException($ex);
             }
         }
     }
@@ -153,9 +150,16 @@ class PdoWrapper implements PdoWrapperInterface
         $this->transactionCount = 0;
 
         try {
-            $this->getPdo()->rollBack();
+            $pdo = $this->getPdo();
+
+            if (!$pdo->rollBack()) {
+                $ex = new PdoWrapperException('Rollback a transaction failure.');
+                $ex->errorInfo = $pdo->errorInfo();
+                throw $ex;
+            }
         } catch (\PDOException $ex) {
-            // ignore
+            $this->reconnect();
+            throw $this->wrapPdoException($ex);
         }
     }
 
@@ -178,13 +182,8 @@ class PdoWrapper implements PdoWrapperInterface
                     throw $ex;
                 }
             } catch (\PDOException $ex) {
-                if ($ex instanceof PdoWrapperException) {
-                    throw $ex;
-                } else {
-                    $wrapperEx = new PdoWrapperException($ex->getMessage(), null, $ex->getCode(), $ex);
-                    $wrapperEx->errorInfo = $ex->errorInfo;
-                    throw $wrapperEx;
-                }
+                $this->reconnect();
+                throw $this->wrapPdoException($ex);
             }
         }
     }
@@ -232,6 +231,24 @@ class PdoWrapper implements PdoWrapperInterface
      */
 
     /**
+     * Wrap the PDO exception.
+     *
+     * @param \PDOException $ex
+     *
+     * @return PdoWrapperException
+     */
+    private function wrapPdoException(\PDOException $ex)
+    {
+        if (!$ex instanceof PdoWrapperException) {
+            $_ex = new PdoWrapperException($ex->getMessage(), null, $ex->getCode(), $ex);
+            $_ex->errorInfo = $ex->errorInfo;
+            $ex = $_ex;
+        }
+
+        return $ex;
+    }
+
+    /**
      * Execute the statement.
      *
      * @param PdoQuery $query
@@ -250,13 +267,8 @@ class PdoWrapper implements PdoWrapperInterface
                 throw $ex;
             }
         } catch (\PDOException $ex) {
-            if ($ex instanceof PdoWrapperException) {
-                throw $ex;
-            } else {
-                $wrapperEx = new PdoWrapperException($ex->getMessage(), $query, $ex->getCode(), $ex);
-                $wrapperEx->errorInfo = $statement->errorInfo();
-                throw $wrapperEx;
-            }
+            $this->reconnect();
+            throw $this->wrapPdoException($ex);
         }
 
         return $statement;

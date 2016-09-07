@@ -42,6 +42,8 @@ interface PdoWrapperInterface
 
     /**
      * Roll back a transaction.
+     *
+     * @throws PdoWrapperException
      */
     public function rollBack();
 
