@@ -54,18 +54,19 @@ class PdoWrapper implements PdoWrapperInterface
         $this->password = $password;
         $this->options = $options ?: [];
 
-        $this->reconnect();
+        $this->connect();
     }
 
     /**
-     * Close and create new connection.
+     * Create a connection.
      *
      * @throws PdoWrapperException
      */
-    private function reconnect()
+    private function connect()
     {
-        // close a previous connection
-        $this->close();
+        if ($this->pdo !== null) {
+            throw new PdoWrapperException('Previous connection is not closed.');
+        }
 
         try {
             $this->pdo = new \PDO(
@@ -77,6 +78,15 @@ class PdoWrapper implements PdoWrapperInterface
         } catch (\PDOException $ex) {
             throw $this->wrapPdoException($ex);
         }
+    }
+
+    /**
+     * Close and create new connection.
+     */
+    private function reconnect()
+    {
+        $this->close();
+        $this->connect();
     }
 
     /**
