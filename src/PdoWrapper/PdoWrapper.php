@@ -12,7 +12,7 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * @var int
      */
-    private $transactionCount = 0;
+    private $transactionLevel = 0;
 
     /**
      * @var \PDOStatement[]
@@ -136,7 +136,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function beginTransaction()
     {
-        if (++$this->transactionCount === 1) {
+        if (++$this->transactionLevel === 1) {
             $pdo = $this->getPdo();
 
             try {
@@ -157,7 +157,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function rollBack()
     {
-        $this->transactionCount = 0;
+        $this->transactionLevel = 0;
 
         try {
             $pdo = $this->getPdo();
@@ -178,11 +178,11 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function commit()
     {
-        if ($this->transactionCount <= 0) {
+        if ($this->transactionLevel <= 0) {
             throw new PdoWrapperException('No transaction found.');
         }
 
-        if (--$this->transactionCount === 0) {
+        if (--$this->transactionLevel === 0) {
             $pdo = $this->getPdo();
 
             try {
@@ -211,7 +211,7 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function close()
     {
-        $this->transactionCount = 0;
+        $this->transactionLevel = 0;
         $this->closeCachedStatements();
         $this->pdo = null;
     }
