@@ -146,7 +146,7 @@ class PdoWrapper implements PdoWrapperInterface
                     throw $ex;
                 }
             } catch (\PDOException $ex) {
-                $this->reconnect();
+                $this->close();
                 throw $this->wrapPdoException($ex);
             }
         }
@@ -168,7 +168,7 @@ class PdoWrapper implements PdoWrapperInterface
                 throw $ex;
             }
         } catch (\PDOException $ex) {
-            $this->reconnect();
+            $this->close();
             throw $this->wrapPdoException($ex);
         }
     }
@@ -192,7 +192,7 @@ class PdoWrapper implements PdoWrapperInterface
                     throw $ex;
                 }
             } catch (\PDOException $ex) {
-                $this->reconnect();
+                $this->close();
                 throw $this->wrapPdoException($ex);
             }
         }
@@ -285,7 +285,7 @@ class PdoWrapper implements PdoWrapperInterface
                 throw $ex;
             }
         } catch (\PDOException $ex) {
-            $this->reconnect();
+            $this->close();
             throw $this->wrapPdoException($ex);
         }
 
