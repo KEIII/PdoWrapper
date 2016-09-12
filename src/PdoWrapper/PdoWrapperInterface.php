@@ -32,8 +32,6 @@ interface PdoWrapperInterface
      * Get a PDO instance.
      *
      * @return \PDO
-     *
-     * @throws PdoWrapperException
      */
     public function getPdo();
 
