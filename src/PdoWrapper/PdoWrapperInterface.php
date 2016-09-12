@@ -5,6 +5,30 @@ namespace KEIII\PdoWrapper;
 interface PdoWrapperInterface
 {
     /**
+     * Create a connection.
+     *
+     * @throws PdoWrapperException
+     */
+    public function connect();
+
+    /**
+     * Close and create new connection.
+     */
+    public function reconnect();
+
+    /**
+     * Close the connection.
+     */
+    public function close();
+
+    /**
+     * Whether there is a connection.
+     *
+     * @return bool
+     */
+    public function isConnected();
+
+    /**
      * Get a PDO instance.
      *
      * @return \PDO
@@ -62,9 +86,4 @@ interface PdoWrapperInterface
      * @return int|string
      */
     public function lastInsertId($name = 'id');
-
-    /**
-     * Close the connection.
-     */
-    public function close();
 }

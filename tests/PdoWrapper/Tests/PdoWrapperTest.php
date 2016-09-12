@@ -120,14 +120,12 @@ class PdoWrapperTest extends \PHPUnit_Extensions_Database_TestCase
         $this->pdoWrapper->read(new PdoQuery($sql, ['id' => 1]))->getFirst();
     }
 
-    /**
-     * @expectedException \KEIII\PdoWrapper\PdoWrapperException
-     */
     public function testClose()
     {
         $pdo = new PdoWrapper('sqlite::memory:');
         $pdo->close();
-        $pdo->read(new PdoQuery('SELECT * FROM people;'))->getFirst();
+
+        self::assertFalse($pdo->isConnected());
     }
 
     /**

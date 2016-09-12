@@ -53,18 +53,14 @@ class PdoWrapper implements PdoWrapperInterface
         $this->username = $username;
         $this->password = $password;
         $this->options = $options ?: [];
-
-        $this->connect();
     }
 
     /**
-     * Create a connection.
-     *
-     * @throws PdoWrapperException
+     * {@inheritdoc}
      */
-    private function connect()
+    public function connect()
     {
-        if ($this->pdo !== null) {
+        if ($this->isConnected()) {
             throw new PdoWrapperException('Previous connection is not closed.');
         }
 
@@ -81,9 +77,9 @@ class PdoWrapper implements PdoWrapperInterface
     }
 
     /**
-     * Close and create new connection.
+     * {@inheritdoc}
      */
-    private function reconnect()
+    public function reconnect()
     {
         $this->close();
         $this->connect();
@@ -92,10 +88,18 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * {@inheritdoc}
      */
+    public function isConnected()
+    {
+        return $this->pdo instanceof \PDO;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPdo()
     {
-        if (!$this->pdo instanceof \PDO) {
-            throw new PdoWrapperException('Connection is closed.');
+        if (!$this->isConnected()) {
+            $this->connect();
         }
 
         return $this->pdo;
