@@ -161,19 +161,21 @@ class PdoWrapper implements PdoWrapperInterface
      */
     public function rollBack()
     {
-        $this->transactionLevel = 0;
-
-        try {
+        if ($this->transactionLevel > 0
+            && --$this->transactionLevel === 0
+        ) {
             $pdo = $this->getPdo();
 
-            if (!$pdo->rollBack()) {
-                $ex = new PdoWrapperException('Rollback a transaction failure.');
-                $ex->errorInfo = $pdo->errorInfo();
-                throw $ex;
+            try {
+                if (!$pdo->rollBack()) {
+                    $ex = new PdoWrapperException('Rollback a transaction failure.');
+                    $ex->errorInfo = $pdo->errorInfo();
+                    throw $ex;
+                }
+            } catch (\PDOException $ex) {
+                $this->close();
+                throw $this->wrapPdoException($ex);
             }
-        } catch (\PDOException $ex) {
-            $this->close();
-            throw $this->wrapPdoException($ex);
         }
     }
 
