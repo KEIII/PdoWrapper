@@ -20,7 +20,12 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
     public function paginatedResult(PdoQuery $query, $limit = 10, $offset = 0)
     {
         $paginatedQueryStr = self::buildQueryStrWithLimit($query->getQueryStr());
-        $paginatedParameters = array_replace($query->getParameters(), [
+        $parameters = array_reduce($query->getParameters(), function (array $carry, PdoParameter $parameter) {
+            $carry[$parameter->getName()] = $parameter->getValue();
+
+            return $carry;
+        }, []);
+        $paginatedParameters = array_replace($parameters, [
             ':__limit' => (int)$limit + 1, // add one additional limit to detect "has more"
             ':__offset' => (int)$offset,
         ]);
