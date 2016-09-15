@@ -2,7 +2,9 @@
 
 namespace KEIII\PdoWrapper;
 
-class PdoPaginatedResult
+use KEIII\PdoWrapper\Interfaces\PdoPaginatedResultInterface;
+
+class PdoPaginatedResult implements PdoPaginatedResultInterface
 {
     /**
      * The total count of founded rows without limit.
@@ -40,7 +42,7 @@ class PdoPaginatedResult
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getTotalCount()
     {
@@ -52,7 +54,7 @@ class PdoPaginatedResult
      *
      * @return $this
      */
-    public function setTotalCount($totalCount)
+    private function setTotalCount($totalCount)
     {
         $this->totalCount = (int)$totalCount;
 
@@ -60,7 +62,7 @@ class PdoPaginatedResult
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getRows()
     {
@@ -72,7 +74,7 @@ class PdoPaginatedResult
      *
      * @return $this
      */
-    public function setRows(array $rows)
+    private function setRows(array $rows)
     {
         $this->rows = $rows;
 
@@ -80,7 +82,7 @@ class PdoPaginatedResult
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isHasMore()
     {
@@ -92,7 +94,7 @@ class PdoPaginatedResult
      *
      * @return $this
      */
-    public function setHasMore($hasMore)
+    private function setHasMore($hasMore)
     {
         $this->hasMore = (bool)$hasMore;
 

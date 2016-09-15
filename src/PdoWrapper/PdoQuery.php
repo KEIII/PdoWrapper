@@ -2,7 +2,10 @@
 
 namespace KEIII\PdoWrapper;
 
-class PdoQuery
+use KEIII\PdoWrapper\Interfaces\PdoParameterInterface;
+use KEIII\PdoWrapper\Interfaces\PdoQueryInterface;
+
+class PdoQuery implements PdoQueryInterface
 {
     /**
      * Query string.
@@ -14,15 +17,15 @@ class PdoQuery
     /**
      * Binded params.
      *
-     * @var PdoParameter[]
+     * @var PdoParameterInterface[]
      */
     private $parameters = [];
 
     /**
      * Constructor.
      *
-     * @param string              $queryStr
-     * @param PdoParameter[]|null $parameters
+     * @param string                       $queryStr
+     * @param PdoParameterInterface[]|null $parameters
      */
     public function __construct($queryStr, array $parameters = null)
     {
@@ -31,7 +34,7 @@ class PdoQuery
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getQueryStr()
     {
@@ -51,7 +54,7 @@ class PdoQuery
     }
 
     /**
-     * @return PdoParameter[]
+     * {@inheritdoc}
      */
     public function getParameters()
     {
@@ -59,7 +62,7 @@ class PdoQuery
     }
 
     /**
-     * @param PdoParameter[] $parameters
+     * @param PdoParameterInterface[] $parameters
      *
      * @return $this
      */

@@ -2,6 +2,9 @@
 
 namespace KEIII\PdoWrapper;
 
+use KEIII\PdoWrapper\Interfaces\PdoPaginatableInterface;
+use KEIII\PdoWrapper\Interfaces\PdoQueryInterface;
+
 class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
 {
     /**
@@ -17,7 +20,7 @@ class PdoMysql extends PdoWrapper implements PdoPaginatableInterface
     /**
      * {@inheritdoc}
      */
-    public function paginatedResult(PdoQuery $query, $limit = 10, $offset = 0)
+    public function paginatedResult(PdoQueryInterface $query, $limit = 10, $offset = 0)
     {
         $paginatedQueryStr = self::buildQueryStrWithLimit($query->getQueryStr());
         $parameters = array_reduce($query->getParameters(), function (array $carry, PdoParameter $parameter) {

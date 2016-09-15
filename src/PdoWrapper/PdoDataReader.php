@@ -2,6 +2,8 @@
 
 namespace KEIII\PdoWrapper;
 
+use KEIII\PdoWrapper\Interfaces\PdoDataReaderInterface;
+
 class PdoDataReader implements PdoDataReaderInterface
 {
     /**

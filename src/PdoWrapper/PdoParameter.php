@@ -2,7 +2,9 @@
 
 namespace KEIII\PdoWrapper;
 
-class PdoParameter
+use KEIII\PdoWrapper\Interfaces\PdoParameterInterface;
+
+class PdoParameter implements PdoParameterInterface
 {
     /**
      * @var string
@@ -43,7 +45,7 @@ class PdoParameter
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -69,7 +71,7 @@ class PdoParameter
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getValue()
     {
@@ -90,7 +92,7 @@ class PdoParameter
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getType()
     {

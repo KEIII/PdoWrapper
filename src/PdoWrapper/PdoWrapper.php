@@ -2,6 +2,11 @@
 
 namespace KEIII\PdoWrapper;
 
+use KEIII\PdoWrapper\Exceptions\PdoWrapperException;
+use KEIII\PdoWrapper\Interfaces\PdoParameterInterface;
+use KEIII\PdoWrapper\Interfaces\PdoQueryInterface;
+use KEIII\PdoWrapper\Interfaces\PdoWrapperInterface;
+
 class PdoWrapper implements PdoWrapperInterface
 {
     /**
@@ -121,7 +126,7 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function read(PdoQuery $query)
+    public function read(PdoQueryInterface $query)
     {
         return new PdoDataReader($this->execute($query));
     }
@@ -129,7 +134,7 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * {@inheritdoc}
      */
-    public function write(PdoQuery $query)
+    public function write(PdoQueryInterface $query)
     {
         $statement = $this->execute($query);
         $statement->closeCursor();
@@ -275,11 +280,11 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * Execute the statement.
      *
-     * @param PdoQuery $query
+     * @param PdoQueryInterface $query
      *
      * @return \PDOStatement
      */
-    private function execute(PdoQuery $query)
+    private function execute(PdoQueryInterface $query)
     {
         $statement = $this->getStatement($query->getQueryStr());
         $this->bindValues($statement, $query->getParameters());
@@ -320,8 +325,8 @@ class PdoWrapper implements PdoWrapperInterface
     /**
      * Bind values.
      *
-     * @param $statement     \PDOStatement
-     * @param PdoParameter[] $parameters
+     * @param \PDOStatement           $statement
+     * @param PdoParameterInterface[] $parameters
      *
      * @return $this
      */

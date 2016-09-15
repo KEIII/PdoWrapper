@@ -1,6 +1,8 @@
 <?php
 
-namespace KEIII\PdoWrapper;
+namespace KEIII\PdoWrapper\Exceptions;
+
+use KEIII\PdoWrapper\Interfaces\PdoQueryInterface;
 
 /**
  * Represents an error raised by PdoWrapper.
@@ -8,19 +10,19 @@ namespace KEIII\PdoWrapper;
 class PdoWrapperException extends \PDOException
 {
     /**
-     * @var PdoQuery|null
+     * @var PdoQueryInterface|null
      */
     private $query;
 
     /**
      * Constructor.
      *
-     * @param string          $message
-     * @param PdoQuery|null   $query
-     * @param string|null     $code
-     * @param \Exception|null $previous
+     * @param string                 $message
+     * @param PdoQueryInterface|null $query
+     * @param string|null            $code
+     * @param \Exception|null        $previous
      */
-    public function __construct($message, PdoQuery $query = null, $code = null, \Exception $previous = null)
+    public function __construct($message, PdoQueryInterface $query = null, $code = null, \Exception $previous = null)
     {
         parent::__construct((string)$message, (int)$code, $previous);
 
@@ -40,11 +42,11 @@ class PdoWrapperException extends \PDOException
      */
     public function hasQuery()
     {
-        return $this->query instanceof PdoQuery;
+        return $this->query instanceof PdoQueryInterface;
     }
 
     /**
-     * @return PdoQuery
+     * @return PdoQueryInterface
      */
     public function getQuery()
     {

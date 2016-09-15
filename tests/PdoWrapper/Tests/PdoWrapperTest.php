@@ -2,6 +2,7 @@
 
 namespace KEIII\PdoWrapper\Tests;
 
+use KEIII\PdoWrapper\Interfaces\PdoWrapperInterface;
 use KEIII\PdoWrapper\PdoQuery;
 use KEIII\PdoWrapper\PdoWrapper;
 
@@ -11,7 +12,7 @@ use KEIII\PdoWrapper\PdoWrapper;
 class PdoWrapperTest extends \PHPUnit_Extensions_Database_TestCase
 {
     /**
-     * @var PdoWrapper|null
+     * @var PdoWrapperInterface|null
      */
     private $pdoWrapper;
 

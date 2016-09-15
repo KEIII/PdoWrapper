@@ -1,6 +1,8 @@
 <?php
 
-namespace KEIII\PdoWrapper;
+namespace KEIII\PdoWrapper\Interfaces;
+
+use KEIII\PdoWrapper\Exceptions\PdoWrapperException;
 
 interface PdoWrapperInterface
 {
@@ -38,22 +40,22 @@ interface PdoWrapperInterface
     /**
      * Read the data from the database.
      *
-     * @param PdoQuery $query
+     * @param PdoQueryInterface $query
      *
-     * @return PdoDataReader
+     * @return PdoDataReaderInterface
      *
      * @throws PdoWrapperException
      */
-    public function read(PdoQuery $query);
+    public function read(PdoQueryInterface $query);
 
     /**
      * Write the data to the database.
      *
-     * @param PdoQuery $query
+     * @param PdoQueryInterface $query
      *
      * @throws PdoWrapperException
      */
-    public function write(PdoQuery $query);
+    public function write(PdoQueryInterface $query);
 
     /**
      * Begin a transaction.

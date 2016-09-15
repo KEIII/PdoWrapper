@@ -1,6 +1,6 @@
 <?php
 
-namespace KEIII\PdoWrapper;
+namespace KEIII\PdoWrapper\Interfaces;
 
 interface PdoDataReaderInterface
 {
